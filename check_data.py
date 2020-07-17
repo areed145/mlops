@@ -1,8 +1,5 @@
 import argparse
-import os
-import azureml.core
 from datetime import datetime
-import pandas as pd
 import pytz
 from azureml.core import Dataset, Model
 from azureml.core.run import Run, _OfflineRun
@@ -31,7 +28,7 @@ try:
     model = Model(ws, args.model_name)
     last_train_time = model.created_time
     print("Model was last trained on {0}.".format(last_train_time))
-except Exception as e:
+except Exception:
     print("Could not get last model train time.")
     last_train_time = datetime.min.replace(tzinfo=pytz.UTC)
 
@@ -43,4 +40,8 @@ if not dataset_changed_time > last_train_time:
     run.parent.cancel()
 else:
     # New data is available since the model was last trained
-    print("Dataset was last updated on {0}. Retraining...".format(dataset_changed_time))
+    print(
+        "Dataset was last updated on {0}. Retraining...".format(
+            dataset_changed_time
+        )
+    )
