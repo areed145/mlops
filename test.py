@@ -13,11 +13,11 @@ from azureml.core.runconfig import (
 from azureml.core.compute import ComputeTarget, AmlCompute
 from azureml.core.compute_target import ComputeTargetException
 from azureml.pipeline.core import (
-    Pipeline, 
-    PipelineParameter, 
-    PipelineData, 
-    TrainingOutput, 
-    Schedule
+    Pipeline,
+    PipelineParameter,
+    PipelineData,
+    TrainingOutput,
+    Schedule,
 )
 from azureml.pipeline.steps import PythonScriptStep, AutoMLStep
 from azureml.train.automl import AutoMLConfig
@@ -240,4 +240,3 @@ schedule = Schedule.create(
     wait_for_provisioning=True,
     polling_interval=1440,
 )
-
