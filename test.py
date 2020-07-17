@@ -3,25 +3,25 @@ import logging
 import pandas as pd
 
 import azureml.core
+from azureml.core import Dataset
 from azureml.core.experiment import Experiment
 from azureml.core.workspace import Workspace
-from azureml.train.automl import AutoMLConfig
-
 from azureml.core.runconfig import (
     CondaDependencies,
     RunConfiguration,
 )
-
 from azureml.core.compute import ComputeTarget, AmlCompute
 from azureml.core.compute_target import ComputeTargetException
+from azureml.pipeline.core import (
+    Pipeline,
+    PipelineParameter,
+    PipelineData,
+    TrainingOutput,
+    Schedule,
+)
+from azureml.pipeline.steps import PythonScriptStep, AutoMLStep
+from azureml.train.automl import AutoMLConfig
 
-from azureml.pipeline.core import Pipeline, PipelineParameter
-from azureml.pipeline.steps import PythonScriptStep
-
-from azureml.pipeline.core import PipelineData, TrainingOutput
-from azureml.core import Dataset
-from azureml.pipeline.steps import AutoMLStep
-from azureml.pipeline.core import Schedule
 
 print("This notebook was created using version 1.6.0 of the Azure ML SDK")
 print(
@@ -240,4 +240,3 @@ schedule = Schedule.create(
     wait_for_provisioning=True,
     polling_interval=1440,
 )
-
