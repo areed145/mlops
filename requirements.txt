@@ -1,1 +1,2 @@
-azureml-sdk[explain,automl]
+azureml-sdk[automl]
+azureml-defaults
