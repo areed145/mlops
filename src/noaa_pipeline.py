@@ -168,6 +168,7 @@ train_ds = Dataset.get_by_name(ws, dataset)
 train_ds = train_ds.drop_columns(["partition_date"])
 automl_config = AutoMLConfig(
     task="forecasting",
+    time_column_name="datetime",
     debug_log="automl_errors.log",
     path=".",
     compute_target=compute_target,
