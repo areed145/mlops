@@ -49,4 +49,4 @@ jobs:
       - name: Begin pipeline
         run: |
           cd src/
-          python test.py
+          python noaa_pipeline.py
