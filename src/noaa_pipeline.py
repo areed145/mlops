@@ -165,10 +165,13 @@ automl_settings = {
     "enable_early_stopping": True,
 }
 train_ds = Dataset.get_by_name(ws, dataset)
+train_ds = train_ds.drop_duplicates(subset=["usaf","datetime"])
 train_ds = train_ds.drop_columns(["partition_date"])
 automl_config = AutoMLConfig(
     task="forecasting",
     time_column_name="datetime",
+    grain_column_names=["usaf"],
+    featurization="auto",
     debug_log="automl_errors.log",
     path=".",
     compute_target=compute_target,
