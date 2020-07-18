@@ -164,7 +164,7 @@ automl_settings = {
     "enable_early_stopping": True,
 }
 train_ds = Dataset.get_by_name(ws, dataset)
-train_ds = train_ds.drop_duplicates(subset=["usaf", "datetime"])
+# train_ds = train_ds.drop_duplicates(subset=["usaf", "datetime"])
 train_ds = train_ds.drop_columns(["partition_date"])
 automl_config = AutoMLConfig(
     task="forecasting",
