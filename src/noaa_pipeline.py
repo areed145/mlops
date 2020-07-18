@@ -77,6 +77,7 @@ conda_run_config.environment.docker.base_image = (
 
 cd = CondaDependencies.create(
     pip_packages=[
+        "azureml-defaults",
         "azureml-sdk[automl]",
         "applicationinsights",
         "azureml-opendatasets",
@@ -108,15 +109,30 @@ data_pipeline = Pipeline(
     workspace=ws,
     steps=[upload_data_step],
 )
-data_pipeline_run = experiment.submit(
-    data_pipeline, pipeline_parameters={"ds_name": dataset}
-)
 
-data_pipeline_run.wait_for_completion(show_output=False)
+# data_pipeline_run = experiment.submit(
+#     data_pipeline, pipeline_parameters={"ds_name": dataset}
+# )
+# data_pipeline_run.wait_for_completion(show_output=False)
+
+pipeline_name = "DataIngestion-Pipeline-NOAAWeather"
+published_pipeline = data_pipeline.publish(
+    name=pipeline_name, description="Pipeline that updates NOAAWeather Dataset"
+)
+published_pipeline
+schedule = Schedule.create(
+    workspace=ws,
+    name="RetrainingSchedule-DataIngestion",
+    pipeline_parameters={"ds_name": dataset},
+    pipeline_id=published_pipeline.id,
+    experiment_name=experiment_name,
+    datastore=dstor,
+    wait_for_provisioning=True,
+    polling_interval=1440,
+)
 
 # The model name with which to register the trained model in the workspace.
 model_name = PipelineParameter("model_name", default_value="noaaweatherds")
-
 data_prep_step = PythonScriptStep(
     script_name="check_data.py",
     allow_reuse=False,
@@ -125,9 +141,6 @@ data_prep_step = PythonScriptStep(
     compute_target=compute_target,
     runconfig=conda_run_config,
 )
-
-train_ds = Dataset.get_by_name(ws, dataset)
-train_ds = train_ds.drop_columns(["partition_date"])
 
 automl_settings = {
     "iteration_timeout_minutes": 10,
@@ -139,7 +152,8 @@ automl_settings = {
     "verbosity": logging.INFO,
     "enable_early_stopping": True,
 }
-
+train_ds = Dataset.get_by_name(ws, dataset)
+train_ds = train_ds.drop_columns(["partition_date"])
 automl_config = AutoMLConfig(
     task="regression",
     debug_log="automl_errors.log",
@@ -151,14 +165,13 @@ automl_config = AutoMLConfig(
 )
 
 metrics_output_name = "metrics_output"
-best_model_output_name = "best_model_output"
-
 metrics_data = PipelineData(
     name="metrics_data",
     datastore=dstor,
     pipeline_output_name=metrics_output_name,
     training_output=TrainingOutput(type="Metrics"),
 )
+best_model_output_name = "best_model_output"
 model_data = PipelineData(
     name="model_data",
     datastore=dstor,
@@ -196,44 +209,21 @@ training_pipeline = Pipeline(
     steps=[data_prep_step, automl_step, register_model_step],
 )
 
-training_pipeline_run = experiment.submit(
-    training_pipeline,
-    pipeline_parameters={"ds_name": dataset, "model_name": "noaaweatherds"},
-)
-
-training_pipeline_run.wait_for_completion(show_output=False)
+# training_pipeline_run = experiment.submit(
+#     training_pipeline,
+#     pipeline_parameters={"ds_name": dataset, "model_name": "noaaweatherds"},
+# )
+# training_pipeline_run.wait_for_completion(show_output=False)
 
 pipeline_name = "Retraining-Pipeline-NOAAWeather"
-
 published_pipeline = training_pipeline.publish(
     name=pipeline_name, description="Pipeline that retrains AutoML model"
 )
-
 published_pipeline
-
 schedule = Schedule.create(
     workspace=ws,
     name="RetrainingSchedule",
     pipeline_parameters={"ds_name": dataset, "model_name": "noaaweatherds"},
-    pipeline_id=published_pipeline.id,
-    experiment_name=experiment_name,
-    datastore=dstor,
-    wait_for_provisioning=True,
-    polling_interval=1440,
-)
-
-pipeline_name = "DataIngestion-Pipeline-NOAAWeather"
-
-published_pipeline = training_pipeline.publish(
-    name=pipeline_name, description="Pipeline that updates NOAAWeather Dataset"
-)
-
-published_pipeline
-
-schedule = Schedule.create(
-    workspace=ws,
-    name="RetrainingSchedule-DataIngestion",
-    pipeline_parameters={"ds_name": dataset},
     pipeline_id=published_pipeline.id,
     experiment_name=experiment_name,
     datastore=dstor,

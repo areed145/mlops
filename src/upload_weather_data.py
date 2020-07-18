@@ -123,41 +123,45 @@ except Exception:
     end_time_last_slice = datetime.today() - relativedelta(weeks=2)
 
 end_time = datetime.utcnow()
-train_df = get_noaa_data(end_time_last_slice, end_time)
 
-if train_df.size > 0:
-    print(
-        "Received {0} rows of new data after {0}.".format(
-            train_df.shape[0], end_time_last_slice
+try:
+    train_df = get_noaa_data(end_time_last_slice, end_time)
+
+    if train_df.size > 0:
+        print(
+            "Received {0} rows of new data after {0}.".format(
+                train_df.shape[0], end_time_last_slice
+            )
         )
-    )
-    folder_name = "{}/{:04d}/{:02d}/{:02d}/{:02d}/{:02d}/{:02d}".format(
-        args.ds_name,
-        end_time.year,
-        end_time.month,
-        end_time.day,
-        end_time.hour,
-        end_time.minute,
-        end_time.second,
-    )
-    file_path = "{0}/data.csv".format(folder_name)
+        folder_name = "{}/{:04d}/{:02d}/{:02d}/{:02d}/{:02d}/{:02d}".format(
+            args.ds_name,
+            end_time.year,
+            end_time.month,
+            end_time.day,
+            end_time.hour,
+            end_time.minute,
+            end_time.second,
+        )
+        file_path = "{0}/data.csv".format(folder_name)
 
-    # Add a new partition to the registered dataset
-    os.makedirs(folder_name, exist_ok=True)
-    train_df.to_csv(file_path, index=False)
+        # Add a new partition to the registered dataset
+        os.makedirs(folder_name, exist_ok=True)
+        train_df.to_csv(file_path, index=False)
 
-    dstor.upload_files(
-        files=[file_path],
-        target_path=folder_name,
-        overwrite=True,
-        show_progress=True,
-    )
-else:
-    print("No new data since {0}.".format(end_time_last_slice))
+        dstor.upload_files(
+            files=[file_path],
+            target_path=folder_name,
+            overwrite=True,
+            show_progress=True,
+        )
+    else:
+        print("No new data since {0}.".format(end_time_last_slice))
 
-if register_dataset:
-    ds = Dataset.Tabular.from_delimited_files(
-        dstor.path("{}/**/*.csv".format(args.ds_name)),
-        partition_format="/{partition_date:yyyy/MM/dd/HH/mm/ss}/data.csv",
-    )
-    ds.register(ws, name=args.ds_name)
+    if register_dataset:
+        ds = Dataset.Tabular.from_delimited_files(
+            dstor.path("{}/**/*.csv".format(args.ds_name)),
+            partition_format="/{partition_date:yyyy/MM/dd/HH/mm/ss}/data.csv",
+        )
+        ds.register(ws, name=args.ds_name)
+except Exception:
+    pass
