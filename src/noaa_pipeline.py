@@ -33,6 +33,18 @@ print(
 ws = Workspace.from_config()
 dstor = ws.get_default_datastore()
 
+# cancel all pipeline schedules
+print("Scheduled pipelines before:")
+scheds = Schedule.list(ws)
+print(scheds)
+for sched in scheds:
+    sched.disable()
+    print(sched.id)
+
+print("Scheduled pipelines after:")
+scheds = Schedule.list(ws)
+print(scheds)
+
 # Choose a name for the run history container in the workspace.
 experiment_name = "retrain-noaaweather"
 experiment = Experiment(ws, experiment_name)
@@ -230,3 +242,7 @@ schedule = Schedule.create(
     wait_for_provisioning=True,
     polling_interval=1440,
 )
+
+print("Scheduled pipelines final:")
+scheds = Schedule.list(ws)
+print(scheds)
