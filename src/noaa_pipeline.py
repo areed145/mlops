@@ -55,7 +55,7 @@ output["Workspace"] = ws.name
 output["Resource Group"] = ws.resource_group
 output["Location"] = ws.location
 output["Run History Name"] = experiment_name
-pd.set_option("display.max_colwidth", -1)
+# pd.set_option("display.max_colwidth", -1)
 outputDf = pd.DataFrame(data=output, index=[""])
 outputDf.T
 
