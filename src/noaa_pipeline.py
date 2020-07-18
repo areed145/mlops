@@ -164,8 +164,13 @@ automl_settings = {
     "enable_early_stopping": True,
 }
 train_ds = Dataset.get_by_name(ws, dataset)
-# train_ds = train_ds.drop_duplicates(subset=["usaf", "datetime"])
 train_ds = train_ds.drop_columns(["partition_date"])
+train_ds = train_ds.to_pandas_dataframe()
+train_ds = train_ds.drop_duplicates(subset=["usaf", "datetime"])
+local_path = 'data/prepared.csv'
+train_ds.to_csv(local_path)
+datastore = ws.get_default_datastore()
+train_ds = Dataset.Tabular.from_delimited_files(datastore.path(local_path))
 automl_config = AutoMLConfig(
     task="forecasting",
     time_column_name="datetime",
