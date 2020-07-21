@@ -138,10 +138,7 @@ schedule = Schedule.create(
     experiment_name=experiment_name,
     datastore=dstor,
     wait_for_provisioning=True,
-    recurrence=ScheduleRecurrence(
-        frequency="Hour", 
-        interval=24,
-    ),
+    recurrence=ScheduleRecurrence(frequency="Hour", interval=24,),
 )
 
 # The model name with which to register the trained model in the workspace.
