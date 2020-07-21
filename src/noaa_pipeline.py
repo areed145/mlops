@@ -1,6 +1,8 @@
+import os
 import logging
 import pandas as pd
 import azureml.core
+from azureml.core.authentication import ServicePrincipalAuthentication
 from azureml.core import Dataset
 from azureml.core.experiment import Experiment
 from azureml.core.workspace import Workspace
@@ -28,7 +30,16 @@ print(
     "of the Azure ML SDK",
 )
 
-ws = Workspace.from_config()
+ws = Workspace(
+    subscription_id="45b59352-da58-4e3a-beab-1a4518951e4e",
+    resource_group="kk6gpv-rg",
+    workspace_name="kk6gpv-aml",
+    auth=ServicePrincipalAuthentication(
+        tenant_id=os.get_env("TENANT_ID"),
+        service_principal_id=os.get_env("SP_ID"),
+        service_principal_password=os.get_env("SP_PASSWORD"),
+    )
+)
 dstor = ws.get_default_datastore()
 
 # cancel all pipeline schedules
