@@ -36,9 +36,9 @@ ws = Workspace(
     resource_group="kk6gpv-rg",
     workspace_name="kk6gpv-aml",
     auth=ServicePrincipalAuthentication(
-        tenant_id=os.environ("TENANT_ID"),
-        service_principal_id=os.environ("SP_ID"),
-        service_principal_password=os.environ("SP_PASSWORD"),
+        tenant_id=os.environ["TENANT_ID"],
+        service_principal_id=os.environ["SP_ID"],
+        service_principal_password=os.environ["SP_PASSWORD"],
     ),
 )
 dstor = ws.get_default_datastore()
