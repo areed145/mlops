@@ -160,6 +160,6 @@ try:
         dstor.path("{}/**/*.csv".format(args.ds_name)),
         partition_format="/{partition_date:yyyy/MM/dd/HH/mm/ss}/data.csv",
     )
-    ds.register(ws, name=args.ds_name, update_if_exist=True)
+    ds.register(ws, name=args.ds_name, create_new_version=True)
 except Exception:
     pass
