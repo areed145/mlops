@@ -138,7 +138,10 @@ schedule = Schedule.create(
     experiment_name=experiment_name,
     datastore=dstor,
     wait_for_provisioning=True,
-    polling_interval=1440,
+    recurrence=ScheduleRecurrence(
+        frequency="Hour", 
+        interval=24,
+    ),
 )
 
 # The model name with which to register the trained model in the workspace.
@@ -247,7 +250,7 @@ schedule = Schedule.create(
     experiment_name=experiment_name,
     datastore=dstor,
     wait_for_provisioning=True,
-    polling_interval=1440,
+    polling_interval=5,
 )
 
 print("Scheduled pipelines final:")
