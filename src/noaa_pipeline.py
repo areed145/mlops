@@ -43,7 +43,6 @@ ws = Workspace(
 )
 dstor = ws.get_default_datastore()
 
-
 # cancel all pipeline schedules
 print("Scheduled pipelines before:")
 scheds = Schedule.list(ws)
@@ -149,7 +148,6 @@ schedule = Schedule.create(
     pipeline_parameters={"ds_name": dataset},
     pipeline_id=published_pipeline.id,
     experiment_name=experiment_name,
-    datastore=dstor,
     wait_for_provisioning=True,
     recurrence=ScheduleRecurrence(frequency="Hour", interval=24,),
 )
