@@ -38,7 +38,7 @@ ws = Workspace(
         tenant_id=os.get_env("TENANT_ID"),
         service_principal_id=os.get_env("SP_ID"),
         service_principal_password=os.get_env("SP_PASSWORD"),
-    )
+    ),
 )
 dstor = ws.get_default_datastore()
 
