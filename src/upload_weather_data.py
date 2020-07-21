@@ -129,7 +129,7 @@ try:
 
     if train_df.size > 0:
         print(
-            "Received {0} rows of new data after {0}.".format(
+            "Received {0} rows of new data after {1}.".format(
                 train_df.shape[0], end_time_last_slice
             )
         )
