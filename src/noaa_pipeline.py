@@ -18,6 +18,7 @@ from azureml.pipeline.core import (
     PipelineData,
     TrainingOutput,
     Schedule,
+    ScheduleRecurrence,
 )
 from azureml.pipeline.steps import PythonScriptStep, AutoMLStep
 from azureml.train.automl import AutoMLConfig
