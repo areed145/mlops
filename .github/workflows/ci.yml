@@ -50,3 +50,7 @@ jobs:
         run: |
           cd src/
           python noaa_pipeline.py
+        env:
+          tenant_id: ${{ secrets.TENANT_ID }}
+          sp_id: ${{ secrets.SP_ID }}
+          sp_password: ${{ secrets.SP_PASSWORD }}
