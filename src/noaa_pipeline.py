@@ -43,6 +43,7 @@ ws = Workspace(
 )
 dstor = ws.get_default_datastore()
 
+
 # cancel all pipeline schedules
 print("Scheduled pipelines before:")
 scheds = Schedule.list(ws)
