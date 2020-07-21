@@ -103,7 +103,6 @@ args = parser.parse_args()
 print("Argument 1(ds_name): %s" % args.ds_name)
 
 dstor = ws.get_default_datastore()
-register_dataset = False
 try:
     ds = Dataset.get_by_name(ws, args.ds_name)
     end_time_last_slice = ds.data_changed_time.replace(tzinfo=None)
@@ -119,7 +118,6 @@ except Exception:
             args.ds_name
         )
     )
-    register_dataset = True
     end_time_last_slice = datetime.today() - relativedelta(weeks=2)
 
 end_time = datetime.utcnow()
@@ -157,11 +155,11 @@ try:
     else:
         print("No new data since {0}.".format(end_time_last_slice))
 
-    if register_dataset:
-        ds = Dataset.Tabular.from_delimited_files(
-            dstor.path("{}/**/*.csv".format(args.ds_name)),
-            partition_format="/{partition_date:yyyy/MM/dd/HH/mm/ss}/data.csv",
-        )
-        ds.register(ws, name=args.ds_name)
+    # if register_dataset:
+    ds = Dataset.Tabular.from_delimited_files(
+        dstor.path("{}/**/*.csv".format(args.ds_name)),
+        partition_format="/{partition_date:yyyy/MM/dd/HH/mm/ss}/data.csv",
+    )
+    ds.register(ws, name=args.ds_name, update_if_exist=True)
 except Exception:
     pass
