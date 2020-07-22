@@ -258,7 +258,7 @@ schedule = Schedule.create(
     experiment_name=experiment_name,
     datastore=dstor,
     wait_for_provisioning=True,
-    polling_interval=5,
+    polling_interval=1440,
 )
 
 print("Scheduled pipelines final:")
