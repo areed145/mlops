@@ -15,7 +15,7 @@ jobs:
         with:
           python-version: "3.7"
       - name: Code quality with black
-        uses: lgeiger/black-action@v1.0.1
+        uses: areed145/black-action@v1.0.2
         with:
           args: ". --check --line-length 79"
       - name: Check dependencies cache
