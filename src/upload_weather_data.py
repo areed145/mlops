@@ -1,6 +1,6 @@
 import argparse
 import os
-from datetime import datetime
+from datetime import datetime, timezone
 from dateutil.relativedelta import relativedelta
 import traceback
 from azureml.core import Dataset
@@ -120,7 +120,7 @@ except Exception:
     )
     end_time_last_slice = datetime.today() - relativedelta(weeks=2)
 
-end_time = datetime.utcnow()
+end_time = datetime.now(timezone.utc)
 
 try:
     train_df = get_noaa_data(end_time_last_slice, end_time)
